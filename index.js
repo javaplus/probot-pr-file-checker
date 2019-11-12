@@ -6,32 +6,62 @@
  * @param {import('probot').Application} app
  */
 module.exports = app => {
-  app.on(['check_suite.requested', 'check_run.rerequested'], check)
+  app.on('pull_request.opened', checkPR);
 
-  async function check (context) {
-    const startTime = new Date()
+  async function checkPR (context) {
+    app.log("Pull Request created!!!!!!!");
+  const repo = context.repo();
 
-    // Do stuff
-    const { head_branch: headBranch, head_sha: headSha } = context.payload.check_suite
-    // Probot API note: context.repo() => {username: 'hiimbex', repo: 'testing-things'}
-    return context.github.checks.create(context.repo({
-      name: 'My app!',
-      head_branch: headBranch,
-      head_sha: headSha,
-      status: 'completed',
-      started_at: startTime,
-      conclusion: 'success',
-      completed_at: new Date(),
-      output: {
-        title: 'Probot check!',
-        summary: 'The check has passed!'
-      }
-    }))
+  // GH API
+  const { paginate, issues, repos, pullRequests } = context.github;
+  const { sha } = context.payload.pull_request.head;
+  // Hold this PR info
+  const statusInfo = { ...repo, sha, context: 'Commit_Message_Bot' };
+  
+
+
+  // Pending
+  await repos.createStatus({
+    ...statusInfo,
+    state: 'pending',
+    description: 'Waiting for the status to be reported'
+  });    
+
+
+    const body = context.payload.pull_request.body;
+    app.log("body=" + body);
+
+    const pull = context.issue();
+    console.log("pull");
+    console.log(pull);
+    isValid = false;
+    if(body && body.includes(".docx")){
+      app.log("We have a .docx");
+      isValid = true;
+    }else{
+      app.log("We DO NOT have a .docx");
+      console.log("creating new comment!");
+      isValid = false;
+			await context.github.issues.createComment({ ...pull, body: "Missing a document!!!!" });
+    }
+
+    // Final status
+		await repos.createStatus({
+			...statusInfo,
+			state: isValid ? 'success' : 'failure',
+			description: `Did not find a Document attached to the original message.`
+		});
+
+    /*const pull = context.issue();
+    console.log("pull");
+    console.log(pull);
+    const repo = context.repo();
+    console.log(repo);
+    const files = context.github.pulls.listFiles(pull.owner,pull.repo,pull.number);
+    console.log(files);
+    */
+
   }
 
-  // For more information on building apps:
-  // https://probot.github.io/docs/
-
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  
 }
