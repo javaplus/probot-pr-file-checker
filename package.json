@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Checks for attached files to pull requests",
-  "author": "Barry Tarlton <tarltob1@nationwide.com>",
+  "author": "Barry Tarlton <btarlton@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/javaplus/pr-attached-file-check-bot.git",
   "homepage": "https://github.com/javaplus/pr-attached-file-check-bot",

@@ -20,4 +20,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2019 Barry Tarlton <tarltob1@nationwide.com>
+[ISC](LICENSE) © 2019 Barry Tarlton <btarlton@gmail.com>
