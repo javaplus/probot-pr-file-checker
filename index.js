@@ -7,6 +7,7 @@
  */
 module.exports = app => {
   app.on('pull_request.opened', checkPR);
+  app.on('pull_request.edited', checkPR);
 
   async function checkPR (context) {
     app.log("Pull Request created!!!!!!!");
@@ -16,7 +17,7 @@ module.exports = app => {
   const { paginate, issues, repos, pullRequests } = context.github;
   const { sha } = context.payload.pull_request.head;
   // Hold this PR info
-  const statusInfo = { ...repo, sha, context: 'Commit_Message_Bot' };
+  const statusInfo = { ...repo, sha, context: 'attached-document-bot' };
   
 
 
@@ -52,14 +53,6 @@ module.exports = app => {
 			description: `Did not find a Document attached to the original message.`
 		});
 
-    /*const pull = context.issue();
-    console.log("pull");
-    console.log(pull);
-    const repo = context.repo();
-    console.log(repo);
-    const files = context.github.pulls.listFiles(pull.owner,pull.repo,pull.number);
-    console.log(files);
-    */
 
   }
 
